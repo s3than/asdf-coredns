@@ -5,11 +5,7 @@ set -euo pipefail
 # TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for coredns.
 GH_REPO="https://github.com/coredns/coredns"
 TOOL_NAME="coredns"
-<<<<<<< HEAD
 TOOL_TEST="coredns -version"
-=======
-TOOL_TEST="coredns --help"
->>>>>>> 28492de (Generate asdf-coredns plugin from template.)
 
 fail() {
   echo -e "asdf-$TOOL_NAME: $*"
