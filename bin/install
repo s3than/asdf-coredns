@@ -57,4 +57,4 @@ get_download_url() {
 	echo "$GH_REPO/releases/download/v${version}/coredns_${version}_${platform}_${cpu}.tgz"
 }
 
-install_kubectl "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+install_coredns "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
