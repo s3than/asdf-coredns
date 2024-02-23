@@ -1,60 +1,11 @@
 #!/usr/bin/env bash
 
-set -e
-set -o pipefail
+set -euo pipefail
 
-ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
-[ -n "$ASDF_INSTALL_VERSION" ] || (echo >&2 'Missing ASDF_INSTALL_VERSION' && exit 1)
-[ -n "$ASDF_INSTALL_PATH" ] || (echo >&2 'Missing ASDF_INSTALL_PATH' && exit 1)
+current_script_path=${BASH_SOURCE[0]}
+plugin_dir=$(dirname "$(dirname "$current_script_path")")
 
-GH_REPO="https://github.com/coredns/coredns"
+# shellcheck source=lib/utils.bash
+source "${plugin_dir}/lib/utils.bash"
 
-install_coredns() {
-	# local install_type=$1
-	local version=$2
-	local install_path=$3
-	local bin_install_path="$install_path/bin"
-	local download_url
-	download_url="$(get_download_url "$version")"
-
-	mkdir -p "${bin_install_path}"
-
-	local bin_path="${bin_install_path}/coredns"
-	echo "Downloading coredns from ${download_url}"
-	if curl -L -sf "$download_url" -o "$bin_path"; then
-		chmod +x "$bin_path"
-	else
-		echo "Failed to download coredns from ${download_url}. Does the version exist and is available in the requested $(get_cpu) architecture?"
-		exit 1
-	fi
-}
-
-get_arch() {
-	uname | tr '[:upper:]' '[:lower:]'
-}
-
-get_cpu() {
-	local machine_hardware_name
-	machine_hardware_name=${ASDF_COREDNS_OVERWRITE_ARCH:-"$(uname -m)"}
-
-	case "$machine_hardware_name" in
-	'x86_64') local cpu_type="amd64" ;;
-	'powerpc64le' | 'ppc64le') local cpu_type="ppc64le" ;;
-	'aarch64') local cpu_type="arm64" ;;
-	'armv7l') local cpu_type="arm" ;;
-	*) local cpu_type="$machine_hardware_name" ;;
-	esac
-
-	echo "$cpu_type"
-}
-
-get_download_url() {
-	local version="$1"
-	local platform
-	platform="$(get_arch)"
-	local cpu
-	cpu=$(get_cpu)
-	echo "$GH_REPO/releases/download/v${version}/coredns_${version}_${platform}_${cpu}.tgz"
-}
-
-install_coredns "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+install_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
