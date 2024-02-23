@@ -27,7 +27,8 @@ sort_versions() {
 list_github_tags() {
 	git ls-remote --tags --refs "$GH_REPO" |
 		grep -o 'refs/tags/.*' | cut -d/ -f3- |
-		sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+).*$/\1/'
+		sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+).*$/\1/' |
+		grep -E '^[0-9]+\.[0-9]+\.[0-9]+$'
 }
 
 list_all_versions() {
